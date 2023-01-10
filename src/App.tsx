@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useAppDispatch } from './hook';
-
-import { addTodo } from './store/todoSlice';
+import {addItem, filterTodoList} from './store/todoSlice';
 import NewTodoForm from './components/NewTodoForm';
 import TodoList from './components/TodoList';
 
@@ -12,38 +11,49 @@ interface Error {
     text: string;
 }
 
-
 function App() {
     const dispatch = useAppDispatch();
 
     /** при заполнения input */
-    const [text, setText] = useState('');
+    const [text, setText] = useState<string>('');
     /** следим за ошибками */
     const [isError, setIsError] = useState<Error>({
         isShow: false,
         text: '',
     });
 
-    const handleAction = () => {
-        console.log(text)
-        /** перенести для отслеживания */
+    const watchInput = (value: string) => {
         setIsError({
-            isShow: text.length > 10,
-            text: text.length > 10 ? 'Вводимый текст не должен превышать 10 символов' : '',
+            isShow: value.length > 9,
+            text: value.length > 9 ? 'Вводимый текст не должен превышать 10 символов' : '',
         });
+        setText(value.slice(0, 10))
+    }
+
+    const handleAction = () => {
+        /** перенести для отслеживания */
         if (!isError.isShow && text.trim().length) {
-            dispatch(addTodo(text));
+            dispatch(addItem(text));
             setText('');
         }
     }
 
+    const filterLists = (data: boolean|null) => {
+        dispatch(filterTodoList(data));
+    }
+
     return (
         <div className='App'>
-            {text}
             <div>Текст не должно превышать 10 символов.</div>
+            <div className="btn-filter">
+                <button onClick={() => filterLists(null)}>All</button>
+                <button onClick={() => filterLists(true)}>Completed</button>
+                <button onClick={() => filterLists(false)}>Active</button>
+
+            </div>
             <NewTodoForm
                 value={text}
-                updateText={setText}
+                updateText={watchInput}
                 handleAction={handleAction}
                 error={isError}
             />

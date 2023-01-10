@@ -21,12 +21,7 @@ interface Todo {
     completed: boolean;
 }
 
-interface TodosState {
+export interface TodosState {
     list: Todo[];
+    staticList: Todo[];
 }
-
-const initialState: TodosState = {
-    list: [],
-}
-
-export default initialState
