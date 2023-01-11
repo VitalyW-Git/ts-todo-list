@@ -14,9 +14,9 @@ interface Error {
 
 function App() {
     /** счетчик по задачам (create/done task/not done task) start */
-    const todos = useAppSelector(state => state.todos.staticList);
-    const createdTasksCount = todos.length
-    const doneTasksCount = todos.filter(
+    const staticTodos = useAppSelector(state => state.todos.staticList);
+    const createdTasksCount = staticTodos.length
+    const doneTasksCount = staticTodos.filter(
         (item: Todo) => item.completed === true
     ).length;
     const notDoneTaskCount = createdTasksCount - doneTasksCount;
