@@ -11,6 +11,24 @@ const todoSlice = createSlice({
     initialState,
     reducers: {
         addItem(state, action: PayloadAction<string>) {
+            /**
+             * если список отфильтрован,
+             * пропускаем через новое заполнение
+             * что-бы не потерять ранее заполненные данные
+             * */
+            if (state.staticList.length >= state.list.length) {
+                const difference = state.staticList.length - state.list.length
+                if (difference >= 1) {
+                    state.list = []
+                    state.list = state.staticList
+                    state.list.push({
+                        id: new Date().toISOString(),
+                        title: action.payload,
+                        completed: false,
+                    });
+                    return
+                }
+            }
             state.list.push({
                 id: new Date().toISOString(),
                 title: action.payload,
